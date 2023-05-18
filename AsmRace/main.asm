@@ -21,12 +21,24 @@ extrn srand:near
 extrn rand:near
 
 .data
+	randomSeed DWORD ?
+	message BYTE "Insert your lucky number: " 0, 0
+
+	digitFormat "%d", 0, 0
+
+	call  generateRandomNumber
 
 .code
 
-public main
-main proc
+main PROC
+	call generateRandomNumber
+main ENDP
 
+generateRandomNumber PROC
+	push message
+	call printf
+	RET
 
-main endp
+generateRandomNumber ENDP
+
 end
