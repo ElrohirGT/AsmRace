@@ -18,6 +18,7 @@ includelib libvcruntime.lib
 printf proto c : vararg
 scanf proto c : vararg
 exit proto c : vararg
+system proto c : vararg
 rand proto c : vararg
 srand proto c : vararg
 
@@ -40,12 +41,15 @@ srand proto c : vararg
 
 
 	goodbyeMessage BYTE "Thanks for playing!",0Ah,"Noentiendo TM.",0
+	clearConsoleCommand BYTE "cls",0
 
 .code
 
 	main PROC
 		call setUpRandomSeed
 		call mainMenu
+
+		call clearConsole
 		
 		invoke printf, addr goodbyeMessage
 		RET
@@ -68,6 +72,12 @@ srand proto c : vararg
 			RET
 	mainMenu ENDP
 
+	; Clears the console calling the system "cls" command.
+	; This only works on windows.
+	clearConsole PROC
+		invoke system, addr clearConsoleCommand
+		RET
+	clearConsole ENDP
  
 	; Let's the user set up a random seed for the dies in the game.
 	setUpRandomSeed PROC
