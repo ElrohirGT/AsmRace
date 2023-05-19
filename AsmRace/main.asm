@@ -15,11 +15,11 @@ includelib legacy_stdio_definitions.lib
 includelib libcmt.lib
 includelib libvcruntime.lib
 
-extrn printf:near
-extrn scanf:near
-extrn exit:near
-extrn srand:near
-extrn rand:near
+printf proto c : vararg
+scanf proto c : vararg
+exit proto c : vararg
+rand proto c : vararg
+srand proto c : vararg
 
 .data
 	randomSeed		DWORD 0
@@ -30,50 +30,39 @@ extrn rand:near
 
 .code
 
-main PROC
-;	--- PREPARE STACK ---
-	push ebp
-	mov ebp, esp
+	main PROC
 
-;   --- SETTING RANDOM ---
-	call generateRandomNumber
+	;   --- SETTING RANDOM SEED ---
+		call setUpRandomSeed
 
-;	--- CLEAN STACK ---
-	add esp, 0
-	push 0
-	call exit
 
-	RET
+		RET
 
-generateRandomNumber PROC
-;		Let the user input a seed, generate a random number
-;		between 1 and RANDOM_MAX (exclusive).
+	setUpRandomSeed PROC
+	;		Let the user input a seed for generating randomNumbers
+		invoke printf, offset message
+		invoke scanf, addr digitFormat, addr randomSeed
+		invoke srand, randomSeed
+		RET
 
-	push offset message
-	call printf
-	add esp, 4
+	setUpRandomSeed ENDP
 
-	lea eax, randomSeed
-	push eax
-	push offset digitFormat
-	call scanf
-	add esp, 8
+	generateRandomNumber PROC
+	;		Generate a random number between 1 and RANDOM_MAX (exclusive).
+		invoke rand
+		mov ebx, RANDOM_MAX
+		SUB EDX, EDX
+		div ebx			    ; The formula its (RandomNum % RANDOM_MAX)
+		
+		.IF edx == 0		; Not admiting 0 values.
+			inc edx
+		.ENDIF
 
-	push randomSeed
-	call srand
-	call rand
-	add esp, 4
+		mov randomNum, edx
 
-	mov ebx, RANDOM_MAX
-	SUB EDX, EDX
-	div ebx
+		RET
 
-	inc edx
-	mov randomNum, edx
-
-	RET
-
-generateRandomNumber ENDP
+	generateRandomNumber ENDP
 
 main ENDP
 	END
