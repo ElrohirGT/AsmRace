@@ -24,7 +24,7 @@ srand proto c : vararg
 .data
 	randomSeed		DWORD 0
 	randomNum		DWORD ?
-	RANDOM_MAX		DWORD 7
+	RANDOM_MAX		DWORD 6
 	message			BYTE "Insert your lucky number: ", 0, 0
 	digitFormat		BYTE "%d", 0, 0
 
@@ -54,9 +54,8 @@ srand proto c : vararg
 		SUB EDX, EDX
 		div ebx			    ; The formula its (RandomNum % RANDOM_MAX)
 		
-		.IF edx == 0		; Not admiting 0 values.
-			inc edx
-		.ENDIF
+		; edx is a value between 0-5. We add 1 to make it between 1-6.
+		inc edx
 
 		mov randomNum, edx
 
