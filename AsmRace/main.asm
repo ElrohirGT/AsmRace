@@ -1,9 +1,9 @@
 ; Universidad del Valle de Guatemala
-; Organizaci�n de Computadoras y Assembler
-; Angela Garc�a
-; Fernando Echeverr�a
+; Organización de Computadoras y Assembler
+; Angela García
+; Fernando Echeverría
 ; Daniel Rayo 22933
-; Flavio Gal�n 22386
+; Flavio Galán 22386
 ; Description: Juego de carreras en MASM para x86.
 
 .386
@@ -22,40 +22,72 @@ rand proto c : vararg
 srand proto c : vararg
 
 .data
+	; General formats
+	digitFormat		BYTE "%d",0
+	stringFormat BYTE "%s",0
+
+	; Main menu variables.
+
+	; How to play screen variables.
+
+	; Main Loop variables.
+
+	; Data for Random number generation.
 	randomSeed		DWORD 0
 	randomNum		DWORD ?
 	RANDOM_MAX		DWORD 6
-	message			BYTE "Insert your lucky number: ", 0, 0
-	digitFormat		BYTE "%d", 0, 0
+	message			BYTE "Insert your lucky number: ",0
+
+
+	goodbyeMessage BYTE "Thanks for playing!",0Ah,"Noentiendo TM.",0
 
 .code
 
 	main PROC
-
-	;   --- SETTING RANDOM SEED ---
 		call setUpRandomSeed
-
-
+		call mainMenu
+		
+		invoke printf, addr goodbyeMessage
 		RET
 	main ENDP
 
+	mainMenu PROC; Angela
+
+		; Display Menu options
+		; 1) Start Game
+		; 2) How to play?
+		; 3) Quit
+
+		RET; This is already option 3
+
+		mainLoop:; Flavio
+			; Code goes here...
+			RET
+		howToPlayScreen:; Fernando
+			; Code goes here....	
+			RET
+	mainMenu ENDP
+
+ 
+	; Let's the user set up a random seed for the dies in the game.
 	setUpRandomSeed PROC
 	;		Let the user input a seed for generating randomNumbers
-		invoke printf, offset message
+		invoke printf, addr message
 		invoke scanf, addr digitFormat, addr randomSeed
 		invoke srand, randomSeed
-		RET
 
+		RET
 	setUpRandomSeed ENDP
 
+	; Generates a random number between 1-RANDOM_MAX (inclusive).
+	; The number is saved to `randomNum`.
 	generateRandomNumber PROC
-	;		Generate a random number between 1 and RANDOM_MAX (exclusive).
 		invoke rand
 		mov ebx, RANDOM_MAX
 		SUB EDX, EDX
-		div ebx			    ; The formula its (RandomNum % RANDOM_MAX)
+		div ebx ; The formula its (RandomNum % RANDOM_MAX)
 		
-		; edx is a value between 0-5. We add 1 to make it between 1-6.
+		; edx is a value between 0-RANDOM_MAX. We add 1 to make it between 1-RANDOM_MAX.
 		inc edx
 
 		mov randomNum, edx
