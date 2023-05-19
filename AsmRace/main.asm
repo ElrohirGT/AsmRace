@@ -1,9 +1,9 @@
 ; Universidad del Valle de Guatemala
-; Organización de Computadoras y Assembler
-; Angela García
-; Fernando Echeverría
+; Organizaciï¿½n de Computadoras y Assembler
+; Angela Garcï¿½a
+; Fernando Echeverrï¿½a
 ; Daniel Rayo 22933
-; Flavio Galán 22386
+; Flavio Galï¿½n 22386
 ; Description: Juego de carreras en MASM para x86.
 
 .386
