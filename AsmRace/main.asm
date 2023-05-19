@@ -37,6 +37,7 @@ srand proto c : vararg
 
 
 		RET
+	main ENDP
 
 	setUpRandomSeed PROC
 	;		Let the user input a seed for generating randomNumbers
@@ -63,5 +64,4 @@ srand proto c : vararg
 
 	generateRandomNumber ENDP
 
-main ENDP
-	END
+END
