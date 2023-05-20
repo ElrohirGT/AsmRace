@@ -32,6 +32,34 @@ srand proto c : vararg
 	; How to play screen variables.
 
 	; Main Loop variables.
+	gameBoardFormat01 BYTE "              ...........                                          ...................              ",0Ah,0
+	gameBoardFormat02 BYTE "           .......'........                                  ..............'...............         ",0Ah,0
+	gameBoardFormat03 BYTE "         ......'''''''''.....                             .......'''''''''',,'''',''''''.....       ",0Ah,0
+	gameBoardFormat04 BYTE "       .......,13'',;14'''....                         ......'''37,'',38,,''39''',40''',41'.....     ",0Ah,0
+	gameBoardFormat05 BYTE "      ....'12''''..'''''15''...                     .......'36'',,,'..''............'',,,'''....    ",0Ah,0
+	gameBoardFormat06 BYTE "     ...'',;,'..........','''..                   ........',,,'................ .  ....'''42''..    ",0Ah,0
+	gameBoardFormat07 BYTE "    ...''11,'.....   ....'16'...                ......'35,'...........                ..'',,'''..   ",0Ah,0
+	gameBoardFormat08 BYTE "    ..'',,''...       ...,;,''..               ...''''',,'.......                      ..''''''.    ",0Ah,0
+	gameBoardFormat09 BYTE "   ..''10,''..        ...'17''..             ...'',,34'......                         ..'',43'..    ",0Ah,0
+	gameBoardFormat10 BYTE "  ..'''''''..         ..'',,''..            ...'''',,'.....                        ....''',,''..    ",0Ah,0
+	gameBoardFormat11 BYTE "  ..''09,'..          ..''18''..           ...',,33''....                      .......''44'.....    ",0Ah,0
+	gameBoardFormat12 BYTE " ..''',''..           ..''''''..           ..',,,'''...                  ..........'''',,,.....     ",0Ah,0
+	gameBoardFormat13 BYTE " ..'08,''..           ..',19''..          ..'''32'''..               .........''''45,''.......      ",0Ah,0
+	gameBoardFormat14 BYTE " ..'',,''.            ..''''''..          ..',;,'''..             .......''''',,'',,'.......        ",0Ah,0
+	gameBoardFormat15 BYTE " .''07,'..            ..',20'..          ..'''31'...           .......'',46''',,'.........          ",0Ah,0
+	gameBoardFormat16 BYTE "..'',,,'..           ..'',,''..         ..'',,'''...        ........',,'','...........              ",0Ah,0
+	gameBoardFormat17 BYTE "..''06''..           ..''21''..        ..'''30''..        ......'''''47...........                  ",0Ah,0
+	gameBoardFormat18 BYTE "..'',,,'..           ..',;,'..        ...',,,''..       .......',,,..........                       ",0Ah,0
+	gameBoardFormat19 BYTE "..''05''..           .''22''..       ...''29,'..      .....'',48'........                           ",0Ah,0
+	gameBoardFormat20 BYTE "...',,''..          ...'',,'..      ...'''''''..      ...''',,'.......                              ",0Ah,0
+	gameBoardFormat21 BYTE "...'04''..          ...'23,'...    ...''28,''..      ..''49''......     ,oc.                        ",0Ah,0
+	gameBoardFormat22 BYTE "..''',''..           ...'''''.......''''',''..      ..''',,'....        'oc. ..                     ",0Ah,0
+	gameBoardFormat23 BYTE "..''03,'..           ....'24,'''''.'27,''....       ..''''''..         .::. :Oo.                    ",0Ah,0
+	gameBoardFormat24 BYTE "..''''''..            ...'',,''',,'''''.....       ..''',50'.. ........,dd,.',',;.                  ",0Ah,0
+	gameBoardFormat25 BYTE "..''02,'..             ....'25''26''.......       ....''',''........'''...:0o..xk,                  ",0Ah,0
+	gameBoardFormat26 BYTE "....,,''..                ...............         .....''',,,''',,'',;,''..'.  ...                  ",0Ah,0
+	gameBoardFormat27 BYTE "....01....                      ......             ....''',,'''',,''''....                          ",0Ah,0
+	gameBoardFormat28 BYTE "   .....                                           ....''''''''''....                             ",0Ah,00
 
 	; Data for Random number generation.
 	randomSeed		DWORD 0
@@ -49,7 +77,7 @@ srand proto c : vararg
 		call setUpRandomSeed
 		call mainMenu
 
-		call clearConsole
+		;call clearConsole
 		
 		invoke printf, addr goodbyeMessage
 		RET
@@ -65,15 +93,48 @@ srand proto c : vararg
 		RET; This is already option 3
 
 		mainLoop:; Flavio
-			; Code goes here...
+		 	call clearConsole
+			call showBoard
 			RET
 		howToPlayScreen:; Fernando
 			; Code goes here....	
 			RET
 	mainMenu ENDP
 
+	; Shows the board of the game.
+	showBoard PROC
+		invoke printf, addr gameBoardFormat01
+		invoke printf, addr gameBoardFormat02
+		invoke printf, addr gameBoardFormat03
+		invoke printf, addr gameBoardFormat04
+		invoke printf, addr gameBoardFormat05
+		invoke printf, addr gameBoardFormat06
+		invoke printf, addr gameBoardFormat07
+		invoke printf, addr gameBoardFormat08
+		invoke printf, addr gameBoardFormat09
+		invoke printf, addr gameBoardFormat10
+		invoke printf, addr gameBoardFormat11
+		invoke printf, addr gameBoardFormat12
+		invoke printf, addr gameBoardFormat13
+		invoke printf, addr gameBoardFormat14
+		invoke printf, addr gameBoardFormat15
+		invoke printf, addr gameBoardFormat16
+		invoke printf, addr gameBoardFormat17
+		invoke printf, addr gameBoardFormat18
+		invoke printf, addr gameBoardFormat19
+		invoke printf, addr gameBoardFormat20
+		invoke printf, addr gameBoardFormat21
+		invoke printf, addr gameBoardFormat22
+		invoke printf, addr gameBoardFormat23
+		invoke printf, addr gameBoardFormat24
+		invoke printf, addr gameBoardFormat25
+		invoke printf, addr gameBoardFormat26
+		invoke printf, addr gameBoardFormat27
+		invoke printf, addr gameBoardFormat28
+		RET
+	showBoard ENDP
+
 	; Clears the console calling the system "cls" command.
-	; This only works on windows.
 	clearConsole PROC
 		invoke system, addr clearConsoleCommand
 		RET
