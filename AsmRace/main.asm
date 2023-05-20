@@ -32,7 +32,7 @@ srand proto c : vararg
 	; How to play screen variables.
 
 	; Main Loop variables.
-	gameBoardFormat01 BYTE "              ...........                                          ...................              ",0Ah,0
+	gameBoardFormat01 BYTE 01Bh,"[1;32m              ...........                                          ...................              ",01Bh,"[0m",0Ah,0
 	gameBoardFormat02 BYTE "           .......'........                                  ..............'...............         ",0Ah,0
 	gameBoardFormat03 BYTE "         ......'''''''''.....                             .......'''''''''',,'''',''''''.....       ",0Ah,0
 	gameBoardFormat04 BYTE "       .......,13'',;14'''....                         ......'''37,'',38,,''39''',40''',41'.....     ",0Ah,0
