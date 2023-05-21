@@ -1,7 +1,7 @@
 ; Universidad del Valle de Guatemala
 ; Organización de Computadoras y Assembler
-; Angela García 22869
-; Fernando Echeverría 22610
+; Angela García
+; Fernando Echeverría
 ; Daniel Rayo 22933
 ; Flavio Galán 22386
 ; Description: Juego de carreras en MASM para x86.
@@ -28,15 +28,16 @@ srand proto c : vararg
 	stringFormat BYTE "%s",0
 
 	; Main menu variables.
+	
 	msgMenu BYTE "* Bienvenido a la VERDADERA CARRERA 3000 *",0Ah, 0
 	espacio BYTE "  ",0Ah, 0
 	MenuPrincipal BYTE "* Menu Principal *  ",0Ah, 0
-	espacio BYTE "  ",0Ah, 0
 	OP1 BYTE "* 1. Jugar",0Ah, 0
 	OP2 BYTE "* 2. Instrucciones",0Ah, 0
 	OP3 BYTE "* 3. Salir ",0Ah, 0
 	IngresarOpcion BYTE "* Ingrese la opcion: ", 0
-	
+	OpcionFormat BYTE "%d",0
+	Opcion DWORD 0
 
 	; How to play screen variables.
 
@@ -92,13 +93,50 @@ srand proto c : vararg
 		RET
 	main ENDP
 
-	mainMenu PROC; Angela
-
-		; Display Menu options
+	;----Menu------------------------------------
+	; Display Menu options
 		; 1) Start Game
 		; 2) How to play?
 		; 3) Quit
+	mainMenu PROC; Angela
+		ploop:
+			;-----prints-------
+			invoke printf, addr espacio
+			invoke printf, addr msgMenu
+			invoke printf, addr espacio
+			invoke printf, addr MenuPrincipal
+			invoke printf, addr OP1
+			invoke printf, addr OP2
+			invoke printf, addr OP3
+			;----Ingreso de la opcion----
+			invoke printf, addr IngresarOpcion
+			invoke scanf, addr OpcionFormat, addr Opcion
 
+			;comparador
+			cmp Opcion, 1
+			je lp1
+			jne lp2
+
+		lp1: ;si es igual a 1, entonces se va al juego
+			call mainLoop
+			jmp ploop
+		lp2: ;En el caso que no se vaya a jugar entonces compara entre el valor 2 y 3 
+			
+			;segundo comparador 
+			cmp Opcion, 2
+			je lp3
+			jne lp4
+			
+		lp3: ;si es igual a 2, va a mostrar las instrucciones
+			call howToPlayScreen 
+			jmp ploop
+
+		lp4: ;si es igual a 3, entonces sale del programa
+			cmp Opcion, 3
+			je endd
+
+	endd: 
+		invoke scanf
 		RET; This is already option 3
 
 		mainLoop:; Flavio
