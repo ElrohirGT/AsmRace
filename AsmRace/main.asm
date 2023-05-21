@@ -39,7 +39,15 @@ srand proto c : vararg
 	OpcionFormat BYTE "%d",0
 	Opcion DWORD 0
 
-	; How to play screen variables.
+	; How to play screen variables. Fernando
+	msgInstrucciones BYTE "----- Instrucciones del Juego -----",0Ah, 0
+	msg1 BYTE "Instruccion general: ",0Ah, 0
+	instruccionGeneral BYTE "1). El jugador lanza dos dados (maximo 6 veces) y tiene que avanzar la cantidad de pasos indicada por los dados.",0Ah, 0
+	lineas BYTE "---------------------------------------------------------------------------------------------------------------",0Ah, 0
+	msg2 BYTE "Reglas: ",0Ah, 0
+	regla1 BYTE "1). Si al tirar los dados ambos son iguales, el jugador retrocede 10 pasos. ",0Ah, 0
+	regla2 BYTE "2). No puede haber retrocesos que lleven al jugador antes de la linea de inicio (el limite es la linea de inicio). ",0Ah, 0
+	regla3 BYTE "3). Si llega a la meta o la sobrepasa antes de 6 intentos de lanzamientos de dados, quiere decir que ¡Has ganado el juego, felicidades!",0Ah, 0
 
 	; Main Loop variables.
 	gameBoardFormat01 BYTE 01Bh,"[1;32m              ...........                                          ...................              ",01Bh,"[0m",0Ah,0
@@ -143,8 +151,16 @@ srand proto c : vararg
 		 	call clearConsole
 			call showBoard
 			RET
-		howToPlayScreen:; Fernando
-			; Code goes here....	
+		howToPlayScreen:; Fernando, son las instrucciones del juego
+			invoke printf, addr espacio
+			invoke printf, addr msgInstrucciones
+			invoke printf, addr msg1
+			invoke printf, addr instruccionGeneral
+			invoke printf, addr lineas
+			invoke printf, addr msg2
+			invoke printf, addr regla1
+			invoke printf, addr regla2
+			invoke printf, addr regla3
 			RET
 	mainMenu ENDP
 
