@@ -1,7 +1,7 @@
 ; Universidad del Valle de Guatemala
 ; Organización de Computadoras y Assembler
-; Angela García
-; Fernando Echeverría
+; Angela García 22869
+; Fernando Echeverría 22610
 ; Daniel Rayo 22933
 ; Flavio Galán 22386
 ; Description: Juego de carreras en MASM para x86.
@@ -28,6 +28,15 @@ srand proto c : vararg
 	stringFormat BYTE "%s",0
 
 	; Main menu variables.
+	msgMenu BYTE "* Bienvenido a la VERDADERA CARRERA 3000 *",0Ah, 0
+	espacio BYTE "  ",0Ah, 0
+	MenuPrincipal BYTE "* Menu Principal *  ",0Ah, 0
+	espacio BYTE "  ",0Ah, 0
+	OP1 BYTE "* 1. Jugar",0Ah, 0
+	OP2 BYTE "* 2. Instrucciones",0Ah, 0
+	OP3 BYTE "* 3. Salir ",0Ah, 0
+	IngresarOpcion BYTE "* Ingrese la opcion: ", 0
+	
 
 	; How to play screen variables.
 
