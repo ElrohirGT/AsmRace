@@ -29,9 +29,9 @@ srand proto c : vararg
 
 	; Main menu variables.
 	
-	msgMenu BYTE "* Bienvenido a la VERDADERA CARRERA 3000 *",0Ah, 0
+	msgMenu BYTE "* Bienvenido a la  * VERDADERA CARRERA 3000 *  *",0Ah, 0
 	espacio BYTE "  ",0Ah, 0
-	MenuPrincipal BYTE "* Menu Principal *  ",0Ah, 0
+	MenuPrincipal BYTE "* ---------------Menu Principal--------------- *  ",0Ah, 0
 	OP1 BYTE "* 1. Jugar",0Ah, 0
 	OP2 BYTE "* 2. Instrucciones",0Ah, 0
 	OP3 BYTE "* 3. Salir ",0Ah, 0
@@ -39,6 +39,21 @@ srand proto c : vararg
 	OpcionFormat BYTE "%d",0
 	Opcion DWORD 0
 
+	;dibujito de gratis
+	draw1 BYTE "    #######",0Ah, 0
+	draw2 BYTE "   #########  ",0Ah, 0
+	draw3 BYTE "  ########### ",0Ah, 0
+	draw4 BYTE " #### ### ####",0Ah, 0
+	draw5 BYTE " #### ### ####",0Ah, 0
+	draw6 BYTE " #### ### ####",0Ah, 0
+	draw7 BYTE " #############",0Ah, 0
+	draw8 BYTE " #W#########W#",0Ah, 0
+	draw9 BYTE " #. ####### .#",0Ah, 0
+	draw10 BYTE " ### ##### ###",0Ah, 0
+	draw11 BYTE "  ###     ### ",0Ah, 0
+	draw12 BYTE "   #########",0Ah, 0
+	draw13 BYTE "    #######",0Ah, 0
+		
 	; How to play screen variables. Fernando
 	msgInstrucciones BYTE "----- Instrucciones del Juego -----",0Ah, 0
 	msg1 BYTE "Instruccion general: ",0Ah, 0
@@ -96,8 +111,9 @@ srand proto c : vararg
 		call mainMenu
 
 		;call clearConsole
-		
 		invoke printf, addr goodbyeMessage
+		invoke printf, addr espacio
+
 		RET
 	main ENDP
 
@@ -109,6 +125,7 @@ srand proto c : vararg
 	mainMenu PROC; Angela
 		ploop:
 			;-----prints-------
+									
 			invoke printf, addr espacio
 			invoke printf, addr msgMenu
 			invoke printf, addr espacio
@@ -141,9 +158,24 @@ srand proto c : vararg
 
 		lp4: ;si es igual a 3, entonces sale del programa
 			cmp Opcion, 3
+			invoke printf, addr espacio
+			invoke printf, addr draw1
+			invoke printf, addr draw2
+			invoke printf, addr draw3
+			invoke printf, addr draw4
+			invoke printf, addr draw5
+			invoke printf, addr draw6
+			invoke printf, addr draw7
+			invoke printf, addr draw8
+			invoke printf, addr draw9
+			invoke printf, addr draw10
+			invoke printf, addr draw11
+			invoke printf, addr draw12
+			invoke printf, addr draw13
 			je endd
 
 	endd: 
+		invoke printf, addr espacio
 		invoke scanf
 		RET; This is already option 3
 
