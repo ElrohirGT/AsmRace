@@ -66,7 +66,7 @@ _getch proto c : vararg 		; To make the "Press enter to continue" functionality.
 	msg2 BYTE "Reglas: ",0Ah, 0
 	regla1 BYTE "1). Si al tirar los dados ambos son iguales, el jugador retrocede 10 pasos. ",0Ah, 0
 	regla2 BYTE "2). No puede haber retrocesos que lleven al jugador antes de la linea de inicio (el limite es la linea de inicio). ",0Ah, 0
-	regla3 BYTE "3). Si llega a la meta o la sobrepasa antes de 6 intentos de lanzamientos de dados, quiere decir que ¡Has ganado el juego, felicidades!",0Ah, 0
+	regla3 BYTE "3). Si llega a la meta o la sobrepasa antes de 6 intentos de lanzamientos de dados, quiere decir que, ",0ADh, "Has ganado el juego, felicidades!",0Ah, 0
 
 	; Main Loop variables.
 	labelDado1 BYTE "Presione enter para lanzar el primer dado...",0Ah,0
