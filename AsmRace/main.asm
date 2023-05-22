@@ -216,6 +216,8 @@ _getch proto c : vararg 		; To make the "Press enter to continue" functionality.
 			jne lp2
 
 		lp1: ;si es igual a 1, entonces se va al juego
+			mov userCell, 1
+			mov throwCount, 0
 			call mainLoop
 			jmp ploop
 		lp2: ;En el caso que no se vaya a jugar entonces compara entre el valor 2 y 3 
@@ -253,15 +255,22 @@ _getch proto c : vararg 		; To make the "Press enter to continue" functionality.
 		RET; This is already option 3
 
 		mainLoop:; Flavio
+		 	call clearConsole
+			call showBoard
+
+			.IF userCell == 50
+				invoke printf, addr userWonMessage, throwCount
+				invoke printf, addr goBackToMenuMessage
+				invoke _getch
+				RET
+			.ENDIF
+
 			.IF throwCount == 6	
 				invoke printf, addr userLostMessage
 				invoke printf, addr goBackToMenuMessage
 				invoke _getch
 				RET
 			.ENDIF
-
-		 	call clearConsole
-			call showBoard
 
 			invoke printf, addr labelDado1
 			invoke _getch
@@ -283,13 +292,17 @@ _getch proto c : vararg 		; To make the "Press enter to continue" functionality.
 			.IF dado1 == eax
 				invoke printf, addr equalDiceThrowMessage
 				sub userCell, 10
-				.IF userCell <= 0
+				.IF userCell >= 50
 					mov userCell, 1
 				.ENDIF
 			.ELSE	
 				mov eax, dado1
 				add eax, dado2
 				add userCell, eax
+
+				.IF userCell >= 50
+					mov userCell, 50
+				.ENDIF
 
 				invoke printf, addr normalDiceThrowMessage, eax
 			.ENDIF
@@ -298,14 +311,7 @@ _getch proto c : vararg 		; To make the "Press enter to continue" functionality.
 			invoke _getch
 
 			inc throwCount
-
-			.IF userCell == 50
-				invoke printf, addr userWonMessage, throwCount
-			.ENDIF
-
-			invoke printf, addr goBackToMenuMessage
-			invoke _getch
-
+			jmp mainLoop
 			RET
 		howToPlayScreen:; Fernando, son las instrucciones del juego
 			invoke printf, addr espacio
