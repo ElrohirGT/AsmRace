@@ -15,17 +15,20 @@ includelib legacy_stdio_definitions.lib
 includelib libcmt.lib
 includelib libvcruntime.lib
 
-printf proto c : vararg
-scanf proto c : vararg
-exit proto c : vararg
-system proto c : vararg
-rand proto c : vararg
-srand proto c : vararg
+printf proto c : vararg ; To print to std output.
+scanf proto c : vararg ; To read from std input.
+system proto c : vararg ; To clear the console screen.
+rand proto c : vararg ; To getting a random number.
+srand proto c : vararg ; To change the seed of the random number generator.
 
 .data
 	; General formats
 	digitFormat		BYTE "%d",0
 	stringFormat BYTE "%s",0
+	ansiReset BYTE 01Bh,"[0m",0
+	boardColor BYTE 01Bh,"[0;95m",0; Purple
+	normalCellColor BYTE 01Bh, "[1;93m",0 ; Yellow
+	userCellColor BYTE 01Bh,"[0;30m", 01Bh,"[0;46m",0 ; Black with cyan background
 
 	; Main menu variables.
 	
@@ -65,34 +68,88 @@ srand proto c : vararg
 	regla3 BYTE "3). Si llega a la meta o la sobrepasa antes de 6 intentos de lanzamientos de dados, quiere decir que ¡Has ganado el juego, felicidades!",0Ah, 0
 
 	; Main Loop variables.
-	gameBoardFormat01 BYTE 01Bh,"[1;32m              ...........                                          ...................              ",01Bh,"[0m",0Ah,0
+	userCell BYTE 1
+
+	gameBoardCell01 BYTE "01",0
+	gameBoardCell02 BYTE "02",0
+	gameBoardCell03 BYTE "03",0
+	gameBoardCell04 BYTE "04",0
+	gameBoardCell05 BYTE "05",0
+	gameBoardCell06 BYTE "06",0
+	gameBoardCell07 BYTE "07",0
+	gameBoardCell08 BYTE "08",0
+	gameBoardCell09 BYTE "09",0
+	gameBoardCell10 BYTE "10",0
+	gameBoardCell11 BYTE "11",0
+	gameBoardCell12 BYTE "12",0
+	gameBoardCell13 BYTE "13",0
+	gameBoardCell14 BYTE "14",0
+	gameBoardCell15 BYTE "15",0
+	gameBoardCell16 BYTE "16",0
+	gameBoardCell17 BYTE "17",0
+	gameBoardCell18 BYTE "18",0
+	gameBoardCell19 BYTE "19",0
+	gameBoardCell20 BYTE "20",0
+	gameBoardCell21 BYTE "21",0
+	gameBoardCell22 BYTE "22",0
+	gameBoardCell23 BYTE "23",0
+	gameBoardCell24 BYTE "24",0
+	gameBoardCell25 BYTE "25",0
+	gameBoardCell26 BYTE "26",0
+	gameBoardCell27 BYTE "27",0
+	gameBoardCell28 BYTE "28",0
+	gameBoardCell29 BYTE "29",0
+	gameBoardCell30 BYTE "30",0
+	gameBoardCell31 BYTE "31",0
+	gameBoardCell32 BYTE "32",0
+	gameBoardCell33 BYTE "33",0
+	gameBoardCell34 BYTE "34",0
+	gameBoardCell35 BYTE "35",0
+	gameBoardCell36 BYTE "36",0
+	gameBoardCell37 BYTE "37",0
+	gameBoardCell38 BYTE "38",0
+	gameBoardCell39 BYTE "39",0
+	gameBoardCell40 BYTE "40",0
+	gameBoardCell41 BYTE "41",0
+	gameBoardCell42 BYTE "42",0
+	gameBoardCell43 BYTE "43",0
+	gameBoardCell44 BYTE "44",0
+	gameBoardCell45 BYTE "45",0
+	gameBoardCell46 BYTE "46",0
+	gameBoardCell47 BYTE "47",0
+	gameBoardCell48 BYTE "48",0
+	gameBoardCell49 BYTE "49",0
+	gameBoardCell50 BYTE "50",0
+
+	gameBoardFormat01 BYTE 01Bh,"[0;95m              ...........                                          ...................              ",0Ah,0
 	gameBoardFormat02 BYTE "           .......'........                                  ..............'...............         ",0Ah,0
 	gameBoardFormat03 BYTE "         ......'''''''''.....                             .......'''''''''',,'''',''''''.....       ",0Ah,0
-	gameBoardFormat04 BYTE "       .......,13'',;14'''....                         ......'''37,'',38,,''39''',40''',41'.....     ",0Ah,0
-	gameBoardFormat05 BYTE "      ....'12''''..'''''15''...                     .......'36'',,,'..''............'',,,'''....    ",0Ah,0
-	gameBoardFormat06 BYTE "     ...'',;,'..........','''..                   ........',,,'................ .  ....'''42''..    ",0Ah,0
-	gameBoardFormat07 BYTE "    ...''11,'.....   ....'16'...                ......'35,'...........                ..'',,'''..   ",0Ah,0
+	gameBoardFormat04_1 BYTE "       .......,%s%s%s%s'',;%s%s%s%s'''....                         ......'''%s%s%s%s,''",0
+	gameBoardFormat04_2 BYTE ",%s%s%s%s,,''%s%s%s%s''',%s%s%s%s''',%s%s%s%s'.....     ",0Ah,0
+	gameBoardFormat05 BYTE "      ....'%s%s%s%s''''..'''''%s%s%s%s''...                     .......'%s%s%s%s'',,,'..''............'',,,'''....    ",0Ah,0
+	gameBoardFormat06 BYTE "     ...'',;,'..........','''..                   ........',,,'................ .  ....'''%s%s%s%s''..    ",0Ah,0
+	gameBoardFormat07 BYTE "    ...''%s%s%s%s,'.....   ....'%s%s%s%s'...                ......'%s%s%s%s,'...........                ..'',,'''..   ",0Ah,0
 	gameBoardFormat08 BYTE "    ..'',,''...       ...,;,''..               ...''''',,'.......                      ..''''''.    ",0Ah,0
-	gameBoardFormat09 BYTE "   ..''10,''..        ...'17''..             ...'',,34'......                         ..'',43'..    ",0Ah,0
+	gameBoardFormat09 BYTE "   ..''%s%s%s%s,''..        ...'%s%s%s%s''..             ...'',,%s%s%s%s'......                         ..'',%s%s%s%s'..    ",0Ah,0
 	gameBoardFormat10 BYTE "  ..'''''''..         ..'',,''..            ...'''',,'.....                        ....''',,''..    ",0Ah,0
-	gameBoardFormat11 BYTE "  ..''09,'..          ..''18''..           ...',,33''....                      .......''44'.....    ",0Ah,0
+	gameBoardFormat11 BYTE "  ..''%s%s%s%s,'..          ..''%s%s%s%s''..           ...',,%s%s%s%s''....                      .......''%s%s%s%s'.....    ",0Ah,0
 	gameBoardFormat12 BYTE " ..''',''..           ..''''''..           ..',,,'''...                  ..........'''',,,.....     ",0Ah,0
-	gameBoardFormat13 BYTE " ..'08,''..           ..',19''..          ..'''32'''..               .........''''45,''.......      ",0Ah,0
+	gameBoardFormat13 BYTE " ..'%s%s%s%s,''..           ..',%s%s%s%s''..          ..'''%s%s%s%s'''..               .........''''%s%s%s%s,''.......      ",0Ah,0
 	gameBoardFormat14 BYTE " ..'',,''.            ..''''''..          ..',;,'''..             .......''''',,'',,'.......        ",0Ah,0
-	gameBoardFormat15 BYTE " .''07,'..            ..',20'..          ..'''31'...           .......'',46''',,'.........          ",0Ah,0
+	gameBoardFormat15 BYTE " .''%s%s%s%s,'..            ..',%s%s%s%s'..          ..'''%s%s%s%s'...           .......'',%s%s%s%s''',,'.........          ",0Ah,0
 	gameBoardFormat16 BYTE "..'',,,'..           ..'',,''..         ..'',,'''...        ........',,'','...........              ",0Ah,0
-	gameBoardFormat17 BYTE "..''06''..           ..''21''..        ..'''30''..        ......'''''47...........                  ",0Ah,0
+	gameBoardFormat17 BYTE "..''%s%s%s%s''..           ..''%s%s%s%s''..        ..'''%s%s%s%s''..        ......'''''%s%s%s%s...........                  ",0Ah,0
 	gameBoardFormat18 BYTE "..'',,,'..           ..',;,'..        ...',,,''..       .......',,,..........                       ",0Ah,0
-	gameBoardFormat19 BYTE "..''05''..           .''22''..       ...''29,'..      .....'',48'........                           ",0Ah,0
+	gameBoardFormat19 BYTE "..''%s%s%s%s''..           .''%s%s%s%s''..       ...''%s%s%s%s,'..      .....'',%s%s%s%s'........                           ",0Ah,0
 	gameBoardFormat20 BYTE "...',,''..          ...'',,'..      ...'''''''..      ...''',,'.......                              ",0Ah,0
-	gameBoardFormat21 BYTE "...'04''..          ...'23,'...    ...''28,''..      ..''49''......     ,oc.                        ",0Ah,0
+	gameBoardFormat21 BYTE "...'%s%s%s%s''..          ...'%s%s%s%s,'...    ...''%s%s%s%s,''..      ..''%s%s%s%s''......     ,oc.                        ",0Ah,0
 	gameBoardFormat22 BYTE "..''',''..           ...'''''.......''''',''..      ..''',,'....        'oc. ..                     ",0Ah,0
-	gameBoardFormat23 BYTE "..''03,'..           ....'24,'''''.'27,''....       ..''''''..         .::. :Oo.                    ",0Ah,0
-	gameBoardFormat24 BYTE "..''''''..            ...'',,''',,'''''.....       ..''',50'.. ........,dd,.',',;.                  ",0Ah,0
-	gameBoardFormat25 BYTE "..''02,'..             ....'25''26''.......       ....''',''........'''...:0o..xk,                  ",0Ah,0
+	gameBoardFormat23 BYTE "..''%s%s%s%s,'..           ....'%s%s%s%s,'''''.'%s%s%s%s,''....       ..''''''..         .::. :Oo.                    ",0Ah,0
+	gameBoardFormat24 BYTE "..''''''..            ...'',,''',,'''''.....       ..''',%s%s%s%s'.. ........,dd,.',',;.                  ",0Ah,0
+	gameBoardFormat25 BYTE "..''%s%s%s%s,'..             ....'%s%s%s%s''%s%s%s%s''.......       ....''',''........'''...:0o..xk,                  ",0Ah,0
 	gameBoardFormat26 BYTE "....,,''..                ...............         .....''',,,''',,'',;,''..'.  ...                  ",0Ah,0
-	gameBoardFormat27 BYTE "....01....                      ......             ....''',,'''',,''''....                          ",0Ah,0
-	gameBoardFormat28 BYTE "   .....                                           ....''''''''''....                             ",0Ah,00
+	gameBoardFormat27 BYTE "....%s%s%s%s....                      ......             ....''',,'''',,''''....                          ",0Ah,0
+	gameBoardFormat28 BYTE "   .....                                           ....''''''''''....                             ",01Bh,"[0m",0Ah,00
 
 	; Data for Random number generation.
 	randomSeed		DWORD 0
@@ -201,30 +258,190 @@ srand proto c : vararg
 		invoke printf, addr gameBoardFormat01
 		invoke printf, addr gameBoardFormat02
 		invoke printf, addr gameBoardFormat03
-		invoke printf, addr gameBoardFormat04
-		invoke printf, addr gameBoardFormat05
-		invoke printf, addr gameBoardFormat06
-		invoke printf, addr gameBoardFormat07
+
+		; 13, 14, 37
+		.IF userCell == 13
+			invoke printf, addr gameBoardFormat04_1, addr userCellColor, addr gameBoardCell13, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell14, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell37, addr ansiReset, addr boardColor
+		.ELSEIF userCell == 14
+			invoke printf, addr gameBoardFormat04_1, addr normalCellColor, addr gameBoardCell13, addr ansiReset, addr boardColor, addr userCellColor, addr gameBoardCell14, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell37, addr ansiReset, addr boardColor
+		.ELSEIF userCell == 37
+			invoke printf, addr gameBoardFormat04_1, addr normalCellColor, addr gameBoardCell13, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell14, addr ansiReset, addr boardColor, addr userCellColor, addr gameBoardCell37, addr ansiReset, addr boardColor
+		.ELSE	
+			invoke printf, addr gameBoardFormat04_1, addr normalCellColor, addr gameBoardCell13, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell14, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell37, addr ansiReset, addr boardColor
+		.ENDIF
+
+		; 38, 39, 40, 41
+		.IF userCell == 38
+			invoke printf, addr gameBoardFormat04_2, addr userCellColor, addr gameBoardCell38, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell39, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell40, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell41, addr ansiReset, addr boardColor
+		.ELSEIF userCell == 39
+			invoke printf, addr gameBoardFormat04_2, addr normalCellColor, addr gameBoardCell38, addr ansiReset, addr boardColor, addr userCellColor, addr gameBoardCell39, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell40, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell41, addr ansiReset, addr boardColor
+		.ELSEIF userCell == 40
+			invoke printf, addr gameBoardFormat04_2, addr normalCellColor, addr gameBoardCell38, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell39, addr ansiReset, addr boardColor, addr userCellColor, addr gameBoardCell40, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell41, addr ansiReset, addr boardColor
+		.ELSEIF userCell == 41
+			invoke printf, addr gameBoardFormat04_2, addr normalCellColor, addr gameBoardCell38, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell39, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell40, addr ansiReset, addr boardColor, addr userCellColor, addr gameBoardCell41, addr ansiReset, addr boardColor
+		.ELSE
+			invoke printf, addr gameBoardFormat04_2, addr normalCellColor, addr gameBoardCell38, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell39, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell40, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell41, addr ansiReset, addr boardColor
+		.ENDIF
+
+		; 12, 15, 36
+		.IF userCell == 12
+			invoke printf, addr gameBoardFormat05, addr userCellColor, addr gameBoardCell12, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell15, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell36, addr ansiReset, addr boardColor
+		.ELSEIF userCell == 15
+			invoke printf, addr gameBoardFormat05, addr normalCellColor, addr gameBoardCell12, addr ansiReset, addr boardColor, addr userCellColor, addr gameBoardCell15, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell36, addr ansiReset, addr boardColor
+		.ELSEIF userCell == 36
+			invoke printf, addr gameBoardFormat05, addr normalCellColor, addr gameBoardCell12, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell15, addr ansiReset, addr boardColor, addr userCellColor, addr gameBoardCell36, addr ansiReset, addr boardColor
+		.ELSE
+			invoke printf, addr gameBoardFormat05, addr normalCellColor, addr gameBoardCell12, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell15, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell36, addr ansiReset, addr boardColor
+		.ENDIF
+		
+		.IF userCell == 42
+			invoke printf, addr gameBoardFormat06, addr userCellColor, addr gameBoardCell42, addr ansiReset, addr boardColor
+		.ELSE
+			invoke printf, addr gameBoardFormat06, addr normalCellColor, addr gameBoardCell42, addr ansiReset, addr boardColor
+		.ENDIF
+
+		; 11, 16, 35
+		.IF userCell == 11
+			invoke printf, addr gameBoardFormat07, addr userCellColor, addr gameBoardCell11, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell16, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell35, addr ansiReset, addr boardColor	
+		.ELSEIF userCell == 16
+			invoke printf, addr gameBoardFormat07, addr normalCellColor, addr gameBoardCell11, addr ansiReset, addr boardColor, addr userCellColor, addr gameBoardCell16, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell35, addr ansiReset, addr boardColor	
+		.ELSEIF userCell == 35
+			invoke printf, addr gameBoardFormat07, addr normalCellColor, addr gameBoardCell11, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell16, addr ansiReset, addr boardColor, addr userCellColor, addr gameBoardCell35, addr ansiReset, addr boardColor	
+		.ELSE	
+			invoke printf, addr gameBoardFormat07, addr normalCellColor, addr gameBoardCell11, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell16, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell35, addr ansiReset, addr boardColor	
+		.ENDIF
 		invoke printf, addr gameBoardFormat08
-		invoke printf, addr gameBoardFormat09
+		
+		; 10, 17, 34, 43
+		.IF userCell == 10
+			invoke printf, addr gameBoardFormat09, addr userCellColor, addr gameBoardCell10, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell17, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell34, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell43, addr ansiReset, addr boardColor 		
+		.ELSEIF userCell == 17
+			invoke printf, addr gameBoardFormat09, addr normalCellColor, addr gameBoardCell10, addr ansiReset, addr boardColor, addr userCellColor, addr gameBoardCell17, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell34, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell43, addr ansiReset, addr boardColor 		
+		.ELSEIF userCell == 34
+			invoke printf, addr gameBoardFormat09, addr normalCellColor, addr gameBoardCell10, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell17, addr ansiReset, addr boardColor, addr userCellColor, addr gameBoardCell34, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell43, addr ansiReset, addr boardColor 		
+		.ELSEIF userCell == 43
+			invoke printf, addr gameBoardFormat09, addr normalCellColor, addr gameBoardCell10, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell17, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell34, addr ansiReset, addr boardColor, addr userCellColor, addr gameBoardCell43, addr ansiReset, addr boardColor 		
+		.ELSE	
+			invoke printf, addr gameBoardFormat09, addr normalCellColor, addr gameBoardCell10, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell17, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell34, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell43, addr ansiReset, addr boardColor 		
+		.ENDIF
 		invoke printf, addr gameBoardFormat10
-		invoke printf, addr gameBoardFormat11
+		
+		; 9, 18, 33, 44
+		.IF userCell == 9
+			invoke printf, addr gameBoardFormat11, addr userCellColor, addr gameBoardCell09, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell18, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell33, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell44, addr ansiReset, addr boardColor   
+		.ELSEIF userCell == 18
+			invoke printf, addr gameBoardFormat11, addr normalCellColor, addr gameBoardCell09, addr ansiReset, addr boardColor, addr userCellColor, addr gameBoardCell18, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell33, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell44, addr ansiReset, addr boardColor   
+		.ELSEIF userCell == 33
+			invoke printf, addr gameBoardFormat11, addr normalCellColor, addr gameBoardCell09, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell18, addr ansiReset, addr boardColor, addr userCellColor, addr gameBoardCell33, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell44, addr ansiReset, addr boardColor   
+		.ELSEIF userCell == 44
+			invoke printf, addr gameBoardFormat11, addr normalCellColor, addr gameBoardCell09, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell18, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell33, addr ansiReset, addr boardColor, addr userCellColor, addr gameBoardCell44, addr ansiReset, addr boardColor   
+		.ELSE
+			invoke printf, addr gameBoardFormat11, addr normalCellColor, addr gameBoardCell09, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell18, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell33, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell44, addr ansiReset, addr boardColor   
+		.ENDIF
 		invoke printf, addr gameBoardFormat12
-		invoke printf, addr gameBoardFormat13
+
+		; 8, 19, 32 45
+		.IF userCell == 8
+			invoke printf, addr gameBoardFormat13, addr userCellColor, addr gameBoardCell08, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell09, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell32, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell45, addr ansiReset, addr boardColor 			
+		.ELSEIF userCell == 19
+			invoke printf, addr gameBoardFormat13, addr normalCellColor, addr gameBoardCell08, addr ansiReset, addr boardColor, addr userCellColor, addr gameBoardCell09, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell32, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell45, addr ansiReset, addr boardColor 		
+		.ELSEIF userCell == 32
+			invoke printf, addr gameBoardFormat13, addr normalCellColor, addr gameBoardCell08, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell09, addr ansiReset, addr boardColor, addr userCellColor, addr gameBoardCell32, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell45, addr ansiReset, addr boardColor 		
+		.ELSEIF userCell == 45
+			invoke printf, addr gameBoardFormat13, addr normalCellColor, addr gameBoardCell08, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell09, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell32, addr ansiReset, addr boardColor, addr userCellColor, addr gameBoardCell45, addr ansiReset, addr boardColor 		
+		.ELSE
+			invoke printf, addr gameBoardFormat13, addr normalCellColor, addr gameBoardCell08, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell09, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell32, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell45, addr ansiReset, addr boardColor 		
+		.ENDIF
+
 		invoke printf, addr gameBoardFormat14
-		invoke printf, addr gameBoardFormat15
+		; 7, 20, 31, 46
+		.IF userCell == 7
+			invoke printf, addr gameBoardFormat15, addr userCellColor, addr gameBoardCell07, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell20, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell31, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell46, addr ansiReset, addr boardColor
+		.ELSEIF userCell == 20
+			invoke printf, addr gameBoardFormat15, addr normalCellColor, addr gameBoardCell07, addr ansiReset, addr boardColor, addr userCellColor, addr gameBoardCell20, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell31, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell46, addr ansiReset, addr boardColor
+		.ELSEIF userCell == 31
+			invoke printf, addr gameBoardFormat15, addr normalCellColor, addr gameBoardCell07, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell20, addr ansiReset, addr boardColor, addr userCellColor, addr gameBoardCell31, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell46, addr ansiReset, addr boardColor
+		.ELSEIF userCell == 46
+			invoke printf, addr gameBoardFormat15, addr normalCellColor, addr gameBoardCell07, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell20, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell31, addr ansiReset, addr boardColor, addr userCellColor, addr gameBoardCell46, addr ansiReset, addr boardColor
+		.ELSE 	
+			invoke printf, addr gameBoardFormat15, addr normalCellColor, addr gameBoardCell07, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell20, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell31, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell46, addr ansiReset, addr boardColor
+		.ENDIF
 		invoke printf, addr gameBoardFormat16
-		invoke printf, addr gameBoardFormat17
+
+		; 6, 21, 30, 47
+		.IF userCell == 6
+			invoke printf, addr gameBoardFormat17, addr userCellColor, addr gameBoardCell06, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell21, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell30, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell47, addr ansiReset, addr boardColor
+		.ELSEIF userCell == 21
+			invoke printf, addr gameBoardFormat17, addr normalCellColor, addr gameBoardCell06, addr ansiReset, addr boardColor, addr userCellColor, addr gameBoardCell21, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell30, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell47, addr ansiReset, addr boardColor
+		.ELSEIF userCell == 30
+			invoke printf, addr gameBoardFormat17, addr normalCellColor, addr gameBoardCell06, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell21, addr ansiReset, addr boardColor, addr userCellColor, addr gameBoardCell30, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell47, addr ansiReset, addr boardColor
+		.ELSEIF userCell == 47
+			invoke printf, addr gameBoardFormat17, addr normalCellColor, addr gameBoardCell06, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell21, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell30, addr ansiReset, addr boardColor, addr userCellColor, addr gameBoardCell47, addr ansiReset, addr boardColor
+		.ELSE
+			invoke printf, addr gameBoardFormat17, addr normalCellColor, addr gameBoardCell06, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell21, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell30, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell47, addr ansiReset, addr boardColor
+		.ENDIF
 		invoke printf, addr gameBoardFormat18
-		invoke printf, addr gameBoardFormat19
+
+		; 5, 22, 29, 48
+		.IF userCell == 5
+			invoke printf, addr gameBoardFormat19, addr userCellColor, addr gameBoardCell05, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell22, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell29, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell48, addr ansiReset, addr boardColor
+		.ELSEIF userCell == 22
+			invoke printf, addr gameBoardFormat19, addr normalCellColor, addr gameBoardCell05, addr ansiReset, addr boardColor, addr userCellColor, addr gameBoardCell22, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell29, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell48, addr ansiReset, addr boardColor
+		.ELSEIF userCell == 29
+			invoke printf, addr gameBoardFormat19, addr normalCellColor, addr gameBoardCell05, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell22, addr ansiReset, addr boardColor, addr userCellColor, addr gameBoardCell29, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell48, addr ansiReset, addr boardColor
+		.ELSEIF userCell == 48	
+			invoke printf, addr gameBoardFormat19, addr normalCellColor, addr gameBoardCell05, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell22, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell29, addr ansiReset, addr boardColor, addr userCellColor, addr gameBoardCell48, addr ansiReset, addr boardColor
+		.ELSE
+			invoke printf, addr gameBoardFormat19, addr normalCellColor, addr gameBoardCell05, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell22, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell29, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell48, addr ansiReset, addr boardColor
+		.ENDIF
 		invoke printf, addr gameBoardFormat20
-		invoke printf, addr gameBoardFormat21
+
+		; 4, 23, 28, 49
+		.IF userCell == 4
+			invoke printf, addr gameBoardFormat21, addr userCellColor, addr gameBoardCell04, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell23, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell28, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell49, addr ansiReset, addr boardColor
+		.ELSEIF userCell == 23
+			invoke printf, addr gameBoardFormat21, addr normalCellColor, addr gameBoardCell04, addr ansiReset, addr boardColor, addr userCellColor, addr gameBoardCell23, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell28, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell49, addr ansiReset, addr boardColor
+		.ELSEIF userCell == 28
+			invoke printf, addr gameBoardFormat21, addr normalCellColor, addr gameBoardCell04, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell23, addr ansiReset, addr boardColor, addr userCellColor, addr gameBoardCell28, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell49, addr ansiReset, addr boardColor
+		.ELSEIF userCell == 49
+			invoke printf, addr gameBoardFormat21, addr normalCellColor, addr gameBoardCell04, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell23, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell28, addr ansiReset, addr boardColor, addr userCellColor, addr gameBoardCell49, addr ansiReset, addr boardColor
+		.ELSE
+			invoke printf, addr gameBoardFormat21, addr normalCellColor, addr gameBoardCell04, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell23, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell28, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell49, addr ansiReset, addr boardColor
+		.ENDIF
 		invoke printf, addr gameBoardFormat22
-		invoke printf, addr gameBoardFormat23
-		invoke printf, addr gameBoardFormat24
-		invoke printf, addr gameBoardFormat25
+
+		.IF userCell == 3
+			invoke printf, addr gameBoardFormat23, addr userCellColor, addr gameBoardCell03, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell24, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell27, addr ansiReset, addr boardColor
+		.ELSEIF userCell == 24	
+			invoke printf, addr gameBoardFormat23, addr normalCellColor, addr gameBoardCell03, addr ansiReset, addr boardColor, addr userCellColor, addr gameBoardCell24, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell27, addr ansiReset, addr boardColor
+		.ELSEIF userCell == 27
+			invoke printf, addr gameBoardFormat23, addr normalCellColor, addr gameBoardCell03, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell24, addr ansiReset, addr boardColor, addr userCellColor, addr gameBoardCell27, addr ansiReset, addr boardColor
+		.ELSE
+			invoke printf, addr gameBoardFormat23, addr normalCellColor, addr gameBoardCell03, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell24, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell27, addr ansiReset, addr boardColor
+		.ENDIF
+
+		.IF userCell == 50
+			invoke printf, addr gameBoardFormat24, addr userCellColor, addr gameBoardCell50, addr ansiReset, addr boardColor
+		.ELSE
+			invoke printf, addr gameBoardFormat24, addr normalCellColor, addr gameBoardCell50, addr ansiReset, addr boardColor
+		.ENDIF
+
+		.IF userCell == 2
+			invoke printf, addr gameBoardFormat25, addr userCellColor, addr gameBoardCell02, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell25, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell26, addr ansiReset, addr boardColor
+		.ELSEIF userCell == 25	
+			invoke printf, addr gameBoardFormat25, addr normalCellColor, addr gameBoardCell02, addr ansiReset, addr boardColor, addr userCellColor, addr gameBoardCell25, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell26, addr ansiReset, addr boardColor
+		.ELSEIF userCell == 26
+			invoke printf, addr gameBoardFormat25, addr normalCellColor, addr gameBoardCell02, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell25, addr ansiReset, addr boardColor, addr userCellColor, addr gameBoardCell26, addr ansiReset, addr boardColor
+		.ELSE
+			invoke printf, addr gameBoardFormat25, addr normalCellColor, addr gameBoardCell02, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell25, addr ansiReset, addr boardColor, addr normalCellColor, addr gameBoardCell26, addr ansiReset, addr boardColor
+		.ENDIF
+
 		invoke printf, addr gameBoardFormat26
-		invoke printf, addr gameBoardFormat27
+		.IF userCell == 1
+			invoke printf, addr gameBoardFormat27, addr userCellColor, addr gameBoardCell01, addr ansiReset, addr boardColor
+		.ELSE
+			invoke printf, addr gameBoardFormat27, addr normalCellColor, addr gameBoardCell01, addr ansiReset, addr boardColor
+		.ENDIF
 		invoke printf, addr gameBoardFormat28
 		RET
 	showBoard ENDP
