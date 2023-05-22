@@ -15,11 +15,12 @@ includelib legacy_stdio_definitions.lib
 includelib libcmt.lib
 includelib libvcruntime.lib
 
-printf proto c : vararg ; To print to std output.
-scanf proto c : vararg ; To read from std input.
-system proto c : vararg ; To clear the console screen.
-rand proto c : vararg ; To getting a random number.
-srand proto c : vararg ; To change the seed of the random number generator.
+printf proto c : vararg 	; To print to std output.
+scanf proto c : vararg 		; To read from std input.
+system proto c : vararg 	; To clear the console screen.
+rand proto c : vararg 		; To getting a random number.
+srand proto c : vararg 		; To change the seed of the random number generator.
+_getch proto c : vararg 		; To make the "Press enter to continue" functionality.
 
 .data
 	; General formats
@@ -68,7 +69,21 @@ srand proto c : vararg ; To change the seed of the random number generator.
 	regla3 BYTE "3). Si llega a la meta o la sobrepasa antes de 6 intentos de lanzamientos de dados, quiere decir que ¡Has ganado el juego, felicidades!",0Ah, 0
 
 	; Main Loop variables.
-	userCell BYTE 1
+	labelDado1 BYTE "Presione enter para lanzar el primer dado...",0Ah,0
+	labelDado2 BYTE "Presione enter para lanzar el segundo dado...",0Ah,0
+	diceResultFormat BYTE "El dado dio: %d",0Ah,0
+	equalDiceThrowMessage BYTE "Lo sentimos, pero tienes que retroceder 10 casillas!",0Ah,0
+	normalDiceThrowMessage BYTE 0ADh,"Avanzas %d casillas!",0Ah,0
+	doneThrowingDiceMessage BYTE "Presiona enter para continuar...",0Ah,0
+	dado1 DWORD 0
+	dado2 DWORD 0
+
+	userCell DWORD 1
+	throwCount BYTE 0
+
+	goBackToMenuMessage BYTE "Presione enter para regresar al menu",0Ah,0
+	userWonMessage BYTE 0ADh,"Felicidades! Has ganado con %d tiradas.",0Ah,0
+	userLostMessage BYTE 0ADh,"Lo sentimos! Pero has acabado tu cantidad limite de tiros",0Ah,0
 
 	gameBoardCell01 BYTE "01",0
 	gameBoardCell02 BYTE "02",0
@@ -181,6 +196,7 @@ srand proto c : vararg ; To change the seed of the random number generator.
 		; 3) Quit
 	mainMenu PROC; Angela
 		ploop:
+			call clearConsole
 			;-----prints-------
 									
 			invoke printf, addr espacio
@@ -239,6 +255,54 @@ srand proto c : vararg ; To change the seed of the random number generator.
 		mainLoop:; Flavio
 		 	call clearConsole
 			call showBoard
+
+			invoke printf, addr labelDado1
+			invoke _getch
+			call generateRandomNumber
+			mov eax, randomNum
+			mov dado1, eax
+
+			invoke printf, addr diceResultFormat, dado1
+
+			invoke printf, addr labelDado2
+			invoke _getch
+			call generateRandomNumber
+			mov eax, randomNum
+			mov dado2, eax
+
+			invoke printf, addr diceResultFormat, dado2
+
+			mov eax, dado2
+			.IF dado1 == eax
+				invoke printf, addr equalDiceThrowMessage
+				sub userCell, 10
+				.IF userCell <= 0
+					mov userCell, 1
+				.ENDIF
+			.ELSE	
+				mov eax, dado1
+				add eax, dado2
+				add userCell, eax
+
+				invoke printf, addr normalDiceThrowMessage, eax
+			.ENDIF
+
+			invoke printf, addr doneThrowingDiceMessage
+			invoke _getch
+
+			inc throwCount
+			cmp throwCount, 6
+			jne mainLoop
+
+			.IF userCell == 50
+				invoke printf, addr userWonMessage, throwCount
+			.ELSE
+				invoke printf, addr userLostMessage
+			.ENDIF
+
+			invoke printf, addr goBackToMenuMessage
+			invoke _getch
+
 			RET
 		howToPlayScreen:; Fernando, son las instrucciones del juego
 			invoke printf, addr espacio
@@ -250,6 +314,8 @@ srand proto c : vararg ; To change the seed of the random number generator.
 			invoke printf, addr regla1
 			invoke printf, addr regla2
 			invoke printf, addr regla3
+			invoke printf, addr goBackToMenuMessage
+			invoke _getch
 			RET
 	mainMenu ENDP
 
