@@ -74,14 +74,14 @@ _getch proto c : vararg 		; To make the "Press enter to continue" functionality.
 	diceResultFormat BYTE "El dado dio: %d",0Ah,0
 	equalDiceThrowMessage BYTE "Lo sentimos, pero tienes que retroceder 10 casillas!",0Ah,0
 	normalDiceThrowMessage BYTE 0ADh,"Avanzas %d casillas!",0Ah,0
-	doneThrowingDiceMessage BYTE "Presiona enter para continuar...",0Ah,0
+	doneThrowingDiceMessage BYTE "Presiona enter para continuar...",0
 	dado1 DWORD 0
 	dado2 DWORD 0
 
 	userCell DWORD 1
 	throwCount BYTE 0
 
-	goBackToMenuMessage BYTE "Presione enter para regresar al menu",0Ah,0
+	goBackToMenuMessage BYTE "Presione enter para regresar al menu...",0
 	userWonMessage BYTE 0ADh,"Felicidades! Has ganado con %d tiradas.",0Ah,0
 	userLostMessage BYTE 0ADh,"Lo sentimos! Pero has acabado tu cantidad limite de tiros",0Ah,0
 
@@ -253,6 +253,13 @@ _getch proto c : vararg 		; To make the "Press enter to continue" functionality.
 		RET; This is already option 3
 
 		mainLoop:; Flavio
+			.IF throwCount == 6	
+				invoke printf, addr userLostMessage
+				invoke printf, addr goBackToMenuMessage
+				invoke _getch
+				RET
+			.ENDIF
+
 		 	call clearConsole
 			call showBoard
 
@@ -291,13 +298,9 @@ _getch proto c : vararg 		; To make the "Press enter to continue" functionality.
 			invoke _getch
 
 			inc throwCount
-			cmp throwCount, 6
-			jne mainLoop
 
 			.IF userCell == 50
 				invoke printf, addr userWonMessage, throwCount
-			.ELSE
-				invoke printf, addr userLostMessage
 			.ENDIF
 
 			invoke printf, addr goBackToMenuMessage
