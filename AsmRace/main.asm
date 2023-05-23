@@ -10,7 +10,7 @@
 .model flat, stdcall, c
 .stack 4096
 
-includelib libucrt.lib
+includelib libucrt.lib; se importan librerias
 includelib legacy_stdio_definitions.lib
 includelib libcmt.lib
 includelib libvcruntime.lib
@@ -35,11 +35,11 @@ _getch proto c : vararg 		; To make the "Press enter to continue" functionality.
 	
 	msgMenu BYTE "* Bienvenido a la  * VERDADERA CARRERA 3000 *  *",0Ah, 0
 	espacio BYTE "  ",0Ah, 0
-	MenuPrincipal BYTE "* ---------------Menu Principal--------------- *  ",0Ah, 0
+	MenuPrincipal BYTE "* ---------------Menu Principal--------------- *  ",0Ah, 0; el menú del juego cuenta con tres opciones
 	OP1 BYTE "* 1. Jugar",0Ah, 0
 	OP2 BYTE "* 2. Instrucciones",0Ah, 0
 	OP3 BYTE "* 3. Salir ",0Ah, 0
-	IngresarOpcion BYTE "* Ingrese la opcion: ", 0
+	IngresarOpcion BYTE "* Ingrese la opcion: ", 0; para que el usuario ingrese la opción deseada. 
 	OpcionFormat BYTE "%d",0
 	Opcion DWORD 0
 
@@ -59,7 +59,7 @@ _getch proto c : vararg 		; To make the "Press enter to continue" functionality.
 	draw13 BYTE "    #######",0Ah, 0
 		
 	; How to play screen variables. Fernando
-	msgInstrucciones BYTE "----- Instrucciones del Juego -----",0Ah, 0
+	msgInstrucciones BYTE "----- Instrucciones del Juego -----",0Ah, 0; mensajes para las instrucciones del juego
 	msg1 BYTE "Instruccion general: ",0Ah, 0
 	instruccionGeneral BYTE "1). El jugador lanza dos dados (maximo 6 veces) y tiene que avanzar la cantidad de pasos indicada por los dados.",0Ah, 0
 	lineas BYTE "---------------------------------------------------------------------------------------------------------------",0Ah, 0
@@ -85,7 +85,7 @@ _getch proto c : vararg 		; To make the "Press enter to continue" functionality.
 	userWonMessage BYTE 0ADh,"Felicidades! Has ganado con %d tiradas.",0Ah,0
 	userLostMessage BYTE 0ADh,"Lo sentimos! Pero has acabado tu cantidad limite de tiros",0Ah,0
 
-	gameBoardCell01 BYTE "01",0
+	gameBoardCell01 BYTE "01",0; variables para cada celda del juego, 50 en total
 	gameBoardCell02 BYTE "02",0
 	gameBoardCell03 BYTE "03",0
 	gameBoardCell04 BYTE "04",0
@@ -136,7 +136,7 @@ _getch proto c : vararg 		; To make the "Press enter to continue" functionality.
 	gameBoardCell49 BYTE "49",0
 	gameBoardCell50 BYTE "50",0
 
-	gameBoardFormat01 BYTE 01Bh,"[0;95m              ...........                                          ...................              ",0Ah,0
+	gameBoardFormat01 BYTE 01Bh,"[0;95m              ...........                                          ...................              ",0Ah,0; tablero del juego
 	gameBoardFormat02 BYTE "           .......'........                                  ..............'...............         ",0Ah,0
 	gameBoardFormat03 BYTE "         ......'''''''''.....                             .......'''''''''',,'''',''''''.....       ",0Ah,0
 	gameBoardFormat04_1 BYTE "       .......,%s%s%s%s'',;%s%s%s%s'''....                         ......'''%s%s%s%s,''",0
@@ -170,7 +170,7 @@ _getch proto c : vararg 		; To make the "Press enter to continue" functionality.
 	randomSeed		DWORD 0
 	randomNum		DWORD ?
 	RANDOM_MAX		DWORD 6
-	message			BYTE "Insert your lucky number: ",0
+	message			BYTE "Insert your lucky number: ",0; a base de la seed genera el lucky number
 
 
 	goodbyeMessage BYTE "Thanks for playing!",0Ah,"Noentiendo TM.",0
@@ -179,10 +179,10 @@ _getch proto c : vararg 		; To make the "Press enter to continue" functionality.
 .code
 
 	main PROC
-		call setUpRandomSeed
+		call setUpRandomSeed; pide el lucky number
 		call mainMenu
 
-		;call clearConsole
+		;call clearConsole; limpia a la consola y tira el mensaje de despedida. 
 		invoke printf, addr goodbyeMessage
 		invoke printf, addr espacio
 
@@ -258,27 +258,27 @@ _getch proto c : vararg 		; To make the "Press enter to continue" functionality.
 		 	call clearConsole
 			call showBoard
 
-			.IF userCell == 50
+			.IF userCell == 50; si el jugador llega a la casilla 50 quiere decir que gano y se muestra el mensaje de felicidades
 				invoke printf, addr userWonMessage, throwCount
 				invoke printf, addr goBackToMenuMessage
 				invoke _getch
 				RET
 			.ENDIF
 
-			.IF throwCount == 6	
+			.IF throwCount == 6	; si llego a las 6 lanzadas de dado, el jugador ha perdido y muestra el mensaje de que no ha ganado. 
 				invoke printf, addr userLostMessage
 				invoke printf, addr goBackToMenuMessage
 				invoke _getch
 				RET
 			.ENDIF
 
-			invoke printf, addr labelDado1
+			invoke printf, addr labelDado1; el usuario tiene que presionar enter
 			invoke _getch
-			call generateRandomNumber
-			mov eax, randomNum
+			call generateRandomNumber; se genera el numero random
+			mov eax, randomNum; se mueve el random a un registro
 			mov dado1, eax
 
-			invoke printf, addr diceResultFormat, dado1
+			invoke printf, addr diceResultFormat, dado1; muestra el resultado del número random obtenido
 
 			invoke printf, addr labelDado2
 			invoke _getch
@@ -291,8 +291,8 @@ _getch proto c : vararg 		; To make the "Press enter to continue" functionality.
 			mov eax, dado2
 			.IF dado1 == eax
 				invoke printf, addr equalDiceThrowMessage
-				sub userCell, 10
-				.IF userCell >= 50
+				sub userCell, 10; tiene que retroceder 10
+				.IF userCell >= 50; si la celda es mayor o igual a 50
 					mov userCell, 1
 				.ENDIF
 			.ELSE	
@@ -314,7 +314,7 @@ _getch proto c : vararg 		; To make the "Press enter to continue" functionality.
 			jmp mainLoop
 			RET
 		howToPlayScreen:; Fernando, son las instrucciones del juego
-			invoke printf, addr espacio
+			invoke printf, addr espacio; print de mensajes para las instrucciones
 			invoke printf, addr msgInstrucciones
 			invoke printf, addr msg1
 			invoke printf, addr instruccionGeneral
